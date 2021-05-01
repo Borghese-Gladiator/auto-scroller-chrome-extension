@@ -1,5 +1,8 @@
 // this is the code which will be injected into a given page...
 
+console.log(interval)
+console.log(distance)
+
 // scrolls page
 alert('hello ' + document.location.href);
 const refreshId = setInterval(() => {

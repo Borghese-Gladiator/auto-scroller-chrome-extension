@@ -1,13 +1,5 @@
 // var app = chrome.runtime.getBackgroundPage();
 
-// button runs external script
-function runContentScript() {
-  chrome.tabs.executeScript({
-    file: 'contentScript.js'
-  });
-}
-document.getElementById('startBtn').addEventListener('click', runContentScript)
-
 // display scroll interval slider value
 const intervalInputElem = document.getElementById("scrollIntervalRange");
 const intervalSpanElem = document.getElementById("scrollIntervalLabel");
@@ -22,3 +14,13 @@ distanceSpanElem.innerHTML = distanceInputElem.value;
 distanceInputElem.oninput = function () {
   distanceSpanElem.innerHTML = this.value;
 }
+
+// button runs external script
+function runContentScript() {
+  chrome.tabs.executeScript({
+    code: `const interval = ${intervalInputElem.value}; const distance = ${distanceInputElem.value}`
+  }, function () {
+    chrome.tabs.executeScript({ file: 'contentScript.js' });
+  });
+}
+document.getElementById('startBtn').addEventListener('click', runContentScript)
