@@ -9,19 +9,19 @@
 
 <body>
   <h3>Auto Scroller</h3>
-  <p>Scroll Interval: <span id="scrollIntervalLabel"></span>s</p>
+  <p>Scroll Interval: <span id="scrollIntervalLabel"></span>ms</p>
   <div class="range">
-    <input id="scrollIntervalRange" type="range" min="1" max="100" value="50">
+    <input id="scrollIntervalRange" type="range" min="1000" max="10000" value="5000">
   </div>
   <br />
   
-  <p>Scroll Interval: <span id="scrollDistanceLabel"></span>px</p>
+  <p>Scroll Distance: <span id="scrollDistanceLabel"></span>px</p>
   <div class="range">
-    <input id="scrollDistanceRange" type="range" min="1" max="100" value="50">
+    <input id="scrollDistanceRange" type="range" min="100" max="500" value="100">
   </div>
   <br />
   
-  <button id="startBtn">Start Scroll</button>
+  <button id="startBtn">Start Scrolling</button>
 
   <script type="text/javascript" src="popup.js"></script>
 </body>
