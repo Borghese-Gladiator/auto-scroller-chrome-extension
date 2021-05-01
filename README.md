@@ -8,7 +8,8 @@ Chrome extension to automatically scroll web page down (especially useful for re
 - Click "Load Unpacked" and navigate to where you downloaded this repo
 
 ## Best Resource
-Used following to finally get popup to call JS script: [https://stackoverflow.com/questions/20764517/execute-script-after-click-in-popup-html-chrome-extension](https://stackoverflow.com/questions/20764517/execute-script-after-click-in-popup-html-chrome-extension)
+- Used following to finally get popup to call JS script: [https://stackoverflow.com/questions/20764517/execute-script-after-click-in-popup-html-chrome-extension](https://stackoverflow.com/questions/20764517/execute-script-after-click-in-popup-html-chrome-extension)
+- Passed parameter to contentScript: [https://stackoverflow.com/questions/17567624/pass-a-parameter-to-a-content-script-injected-using-chrome-tabs-executescript](https://stackoverflow.com/questions/17567624/pass-a-parameter-to-a-content-script-injected-using-chrome-tabs-executescript)
 
 ## Resources
 - Initialized manifest.json: [https://github.com/GoogleChrome/chrome-extensions-samples/tree/main/examples/hello-world](https://github.com/GoogleChrome/chrome-extensions-samples/tree/main/examples/hello-world)
