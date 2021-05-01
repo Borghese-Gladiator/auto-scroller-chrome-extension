@@ -4,16 +4,25 @@
 <head>
   <title>Auto Scroller</title>
   <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-  <h1>Auto Scroller</h1>
-  <button id="nextPageButton">Next page!</button>
+  <h3>Auto Scroller</h3>
+  <p>Scroll Interval: <span id="scrollIntervalLabel"></span>s</p>
+  <div class="range">
+    <input id="scrollIntervalRange" type="range" min="1" max="100" value="50">
+  </div>
+  <br />
+  
+  <p>Scroll Interval: <span id="scrollDistanceLabel"></span>px</p>
+  <div class="range">
+    <input id="scrollDistanceRange" type="range" min="1" max="100" value="50">
+  </div>
+  <br />
+  
+  <button id="startBtn">Start Scroll</button>
 
-  <h1>Smooth Scroll</h1>
-  <button id="showSnackbar">Show Snackbar</button>
-
-  <div id="snackbar">Some text some message..</div>
   <script src="popup.js"></script>
 </body>
 
