@@ -6,7 +6,7 @@ console.log(distance)
 // scrolls page
 alert('hello ' + document.location.href);
 const refreshId = setInterval(() => {
-  window.scrollBy(0, 100);
+  window.scrollBy(0, distance);
   if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
     // if bottom is hit
     clearInterval(refreshId); // stop interval
@@ -20,4 +20,4 @@ const refreshId = setInterval(() => {
     alert(`Next chapter: ${nextChapURL}`);
     window.location.href = nextChapURL
   }
-}, 1000)
+}, interval)
