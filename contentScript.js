@@ -53,6 +53,7 @@ function addRunningIcon() {
   newDiv.style.position = "fixed";
   newDiv.style.bottom = "0";
   newDiv.style.right = "0";
+  newDiv.style.zIndex = "1000205";
 
   // create a new button element
   const newButton = document.createElement("button");
