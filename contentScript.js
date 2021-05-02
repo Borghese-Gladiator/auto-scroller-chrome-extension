@@ -7,15 +7,17 @@ let isRunning = false
 
 addFontAwesome()
 
+var refreshId;
+
 document.body.onkeyup = function (e) {
   // detect spacebar click
   if (e.keyCode === 32 || e.key === ' ') {
     if (isRunning) {
       // stop script
-      clearInterval(a); // stop interval
+      clearInterval(refreshId); // stop interval
       removeRunningIcon();
     } else {
-      var a = setInterval(startScroll, interval);
+      refreshId = setInterval(startScroll, interval);
       addRunningIcon();
     }
     isRunning = !isRunning
