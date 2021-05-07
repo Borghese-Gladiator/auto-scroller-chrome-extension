@@ -46,7 +46,7 @@ function coreScrollScript() {
     const nextChapURL = window.location.href.replace(/\/[^\/]*$/, `/${currentChapId + 1}.html`);
 
     // move to next chapter URL
-    alert(`Next chapter: ${nextChapURL}`);
+    console.log(`Next chapter: ${nextChapURL}`);
     window.location.href = nextChapURL
   }
 }
