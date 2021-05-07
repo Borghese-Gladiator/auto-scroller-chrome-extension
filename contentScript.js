@@ -2,12 +2,22 @@
 const interval = 5000 // ms (milliseconds) 1000ms=1s
 const distance = 300 // px (pixels)
 
+// INITIALIZATION
+// Add Font Awesome
+addFontAwesome();
+// Remove advertisements
+const insElems = document.getElementsByTagName('ins');
+for (var i = 0; i < insElems.length; i++) {
+  insElems[i].remove()
+}
+// Get Last p Element
+const pList = document.getElementsByTagName('p');
+const pFourthLastElem = pList[pList.length - 4]; // 4th last - last 3 p elements are 昵称 box, 评论 box, and 发表评论 button label
+
 // spacebar plays/pauses script
-let isRunning = false
-
-addFontAwesome()
-
+let isRunning = false;
 var refreshId;
+
 
 document.body.onkeyup = function (e) {
   // detect spacebar click
@@ -15,18 +25,21 @@ document.body.onkeyup = function (e) {
     if (isRunning) {
       // stop script
       clearInterval(refreshId); // stop interval
-      removeRunningIcon();
+      removeRunningPopup();
     } else {
-      refreshId = setInterval(startScroll, interval);
-      addRunningIcon();
+      refreshId = setInterval(coreScrollScript, interval);
+      addRunningPopup();
     }
     isRunning = !isRunning
   }
 }
 
-function startScroll() {
+function coreScrollScript() {
   window.scrollBy(0, distance);
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+  
+  // Check for when scrolled past element
+  console.log(`WINDOW SCROLL: ${window.scrollY} + ${pFourthLastElem.offsetTop}`)
+  if (window.scrollY >= pFourthLastElem.offsetTop) {
     // get last chapter ID from format: "shehui/ruguomeiyoumingtian/120556.html"
     const currentChapText = window.location.pathname.split('/').pop().split('.')[0];
     const currentChapId = parseInt(currentChapText, 10);
@@ -46,7 +59,7 @@ function addFontAwesome() {
   document.getElementsByTagName("head")[0].appendChild(linkElement);
 }
 
-function addRunningIcon() {
+function addRunningPopup() {
   // create a new div element
   const newDiv = document.createElement("button");
   newDiv.id = "bottom-right-popup"
@@ -73,9 +86,12 @@ function addRunningIcon() {
   document.body.appendChild(newDiv);
 }
 
-function removeRunningIcon() {
+function removeRunningPopup() {
   document.getElementById("bottom-right-popup").remove();
 }
 
 // const newContent = document.createTextNode("Hi there and greetings!");
 // newButton.appendChild(newContent);
+
+// FORMER next page conditional - detects scrolled to bottom
+// if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
