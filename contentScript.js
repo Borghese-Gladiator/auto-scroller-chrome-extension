@@ -5,11 +5,19 @@ const distance = 300 // px (pixels)
 // INITIALIZATION
 // Add Font Awesome
 addFontAwesome();
+
 // Remove advertisements
 const insElems = document.getElementsByTagName('ins');
 for (var i = 0; i < insElems.length; i++) {
   insElems[i].remove()
 }
+
+// Remove blank space left by ads
+const adElems = document.getElementsByClassName('adsbygoogle');
+for (var i = 0; i < insElems.length; i++) {
+  adElems[i].remove()
+}
+
 // Get Last p Element
 const pList = document.getElementsByTagName('p');
 const pFourthLastElem = pList[pList.length - 4]; // 4th last - last 3 p elements are 昵称 box, 评论 box, and 发表评论 button label
@@ -38,7 +46,7 @@ function coreScrollScript() {
   console.log(window.pageYOffset)
   // Check for when scrolled past element
   console.log(`WINDOW SCROLL: ${window.scrollY} + ${pFourthLastElem.offsetTop}`)
-  
+
   if (window.scrollY >= pFourthLastElem.offsetTop) {
     // get last chapter ID from format: "shehui/ruguomeiyoumingtian/120556.html"
     const currentChapText = window.location.pathname.split('/').pop().split('.')[0];
