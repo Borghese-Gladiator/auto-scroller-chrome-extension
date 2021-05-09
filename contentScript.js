@@ -35,10 +35,10 @@ document.body.onkeyup = function (e) {
 }
 
 function coreScrollScript() {
-  window.scrollBy(0, distance);
-  
+  console.log(window.pageYOffset)
   // Check for when scrolled past element
   console.log(`WINDOW SCROLL: ${window.scrollY} + ${pFourthLastElem.offsetTop}`)
+  
   if (window.scrollY >= pFourthLastElem.offsetTop) {
     // get last chapter ID from format: "shehui/ruguomeiyoumingtian/120556.html"
     const currentChapText = window.location.pathname.split('/').pop().split('.')[0];
@@ -49,6 +49,7 @@ function coreScrollScript() {
     console.log(`Next chapter: ${nextChapURL}`);
     window.location.href = nextChapURL
   }
+  window.scrollBy(0, distance);
 }
 
 function addFontAwesome() {
