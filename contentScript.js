@@ -1,106 +1,158 @@
-// this is the code which will be injected into a given page...
+/**
+ * This is the code which will be injected into a given page...
+ */
+
+// CONFIGURATION
 const interval = 5000 // ms (milliseconds) 1000ms=1s
-const distance = 300 // px (pixels)
+const scrollDistance = 300 // px (pixels)
+const bottomDistanceBeforeNextPage = 100;
 
-// INITIALIZATION
-// Add Font Awesome
-addFontAwesome();
 
-// Remove advertisements
-const insElems = document.getElementsByTagName('ins');
-for (var i = 0; i < insElems.length; i++) {
-  insElems[i].remove()
-}
+// ----------------------------------------------
+// DOM Utility Functions - https://stackoverflow.com/questions/22191576/javascript-createelement-and-setattribute
+const el = (sel, par) => (par || document).querySelector(sel);
+const els = (sel, par) => (par || document).querySelectorAll(sel);
+const elNew = (tag, prop) => Object.assign(document.createElement(tag), prop);
+const attr = (el, attr) => Object.entries(attr).forEach(([k, v]) => el.setAttribute(k, v));
+const css = (el, styles) => Object.assign(el.style, styles);
 
-// Remove blank space left by ads
-const adElems = document.getElementsByClassName('adsbygoogle');
-for (var i = 0; i < insElems.length; i++) {
-  adElems[i].remove()
-}
-
-// Get Last p Element
-const pList = document.getElementsByTagName('p');
-const pFourthLastElem = pList[pList.length - 4]; // 4th last - last 3 p elements are 昵称 box, 评论 box, and 发表评论 button label
-
-// spacebar plays/pauses script
+// CONSTANTS
+const popupId = "timmy-popup";
 let isRunning = false;
-var refreshId;
+let refreshId;
+importFontAwesome();
+const nextPageURL = getNextPageURL();
 
+// MAIN
+startScript()
+document.body.onkeyup = toggleScript;
 
-document.body.onkeyup = function (e) {
+// UTILS
+function importFontAwesome() {
+	const fwLink = elNew("link", {
+		rel: 'stylesheet',
+		type: 'text/css',
+		href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+	});
+  document.getElementsByTagName("head")[0].appendChild(fwLink);
+}
+
+function getNextPageURL() {
+	/*
+		// XPATH - does not work since Nodes are not interactable
+		const xpath = "//*[contains(text(), '下一章')]";
+		// XPathResult returns Node
+		// https://developer.mozilla.org/en-US/docs/Web/API/XPathResult
+		// https://developer.mozilla.org/en-US/docs/Web/API/Node
+		let nextPageElem = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+	*/
+	let nextPageURL;
+	// Get URL from next page button's a href
+	let nextPageElem;
+	const elems = document.body.getElementsByTagName("a");
+	for (let i = 0; i < elems.length; i++) {
+		if (elems[i].textContent.includes('下一章')) {
+			nextPageElem = elems[i];
+			break;
+		}
+	}
+	if (nextPageElem) {
+		console.log(`Next Chapter URL via next page button: ${nextPageElem.getAttribute('href')}`)
+		return nextPageElem.getAttribute('href');
+	}
+
+	// Get URL from regex
+	const currentChapURL = window.location.pathname
+	const currentChapText = window.location.pathname.split('/').pop().split('.')[0];
+	const currentChapId = parseInt(currentChapText, 10);
+	// regex - get last chapter ID from format: "shehui/ruguomeiyoumingtian/120556.html"
+	const nextChapURL = window.location.href.replace(/\/[^\/]*$/, `/${currentChapId + 1}.html`);
+	console.log(`Next Chapter URL via REGEX: ${nextChapURL}`)
+	return nextChapURL;
+}
+
+function toggleScript(e) {
   // detect spacebar click
-  if (e.keyCode === 32 || e.key === ' ') {
-    if (isRunning) {
-      // stop script
-      clearInterval(refreshId); // stop interval
-      removeRunningPopup();
-    } else {
-      refreshId = setInterval(coreScrollScript, interval);
-      addRunningPopup();
-    }
+	if (e.key == " " || e.code == "Space" || e.keyCode == 32) {
+		if (isRunning) stopScript();
+		else startScript();
     isRunning = !isRunning
   }
 }
 
-function coreScrollScript() {
-  console.log(window.pageYOffset)
-  // Check for when scrolled past element
-  console.log(`WINDOW SCROLL: ${window.scrollY} + ${pFourthLastElem.offsetTop}`)
+function scrollDown() {	
+  console.log(`current scroll: ${window.innerHeight + window.scrollY}`)
+	console.log(`buttom: ${document.body.offsetHeight - bottomDistanceBeforeNextPage}`)
+	/*
+	console.log(`current pageYOffset: ${window.pageYOffset}, nextPageElem pageYOffset: ${nextPageElem.offsetTop}`);
+  console.log(`current scrollY: ${window.scrollY}`);
+	// next page is sometimes at the TOP and the BOTTOM
+	// || nextPageElem !== null && window.scrollY >= nextPageElem.offsetTo
+	*/
 
-  if (window.scrollY >= pFourthLastElem.offsetTop) {
-    // get last chapter ID from format: "shehui/ruguomeiyoumingtian/120556.html"
-    const currentChapText = window.location.pathname.split('/').pop().split('.')[0];
-    const currentChapId = parseInt(currentChapText, 10);
-    const nextChapURL = window.location.href.replace(/\/[^\/]*$/, `/${currentChapId + 1}.html`);
-
-    // move to next chapter URL
-    console.log(`Next chapter: ${nextChapURL}`);
-    window.location.href = nextChapURL
-  }
-  window.scrollBy(0, distance);
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - bottomDistanceBeforeNextPage)
+		window.location.href = nextPageURL;
+	else window.scrollBy(0, scrollDistance);
 }
 
-function addFontAwesome() {
-  const linkElement = document.createElement('link');
-  linkElement.setAttribute('rel', 'stylesheet');
-  linkElement.setAttribute('type', 'text/css');
-  linkElement.setAttribute('href', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-  document.getElementsByTagName("head")[0].appendChild(linkElement);
+function startScript() {
+	console.log("Starting script")
+	refreshId = setInterval(scrollDown, interval);
+	showPopup();
 }
 
-function addRunningPopup() {
-  // create a new div element
-  const newDiv = document.createElement("button");
-  newDiv.id = "bottom-right-popup"
-  newDiv.style.position = "fixed";
-  newDiv.style.bottom = "0";
-  newDiv.style.right = "0";
-  newDiv.style.zIndex = "1000205";
-
-  // create a new button element
-  const newButton = document.createElement("button");
-  newButton.style.backgroundColor = "red";
-  newButton.style.border = "none";
-  newButton.style.color = "white";
-  newButton.style.padding = "12px 24px";
-  newButton.style.fontSize = "16px";
-
-  // set to icon
-  newButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i>Running'
-
-  // add newButton to newDiv
-  newDiv.appendChild(newButton)
-
-  // add the newly created element and its content into the DOM
-  document.body.appendChild(newDiv);
+function stopScript() {
+	console.log("Stopping script")
+	clearInterval(refreshId);
+	hidePopup();
 }
 
-function removeRunningPopup() {
-  document.getElementById("bottom-right-popup").remove();
+function showPopup() {
+	const popup = elNew("div", {
+		id: popupId,
+		style: `
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			zIndex: 1000205;
+		`
+	});
+	const btn = elNew("button", {
+		innerHTML: '<i class="fa fa-spinner fa-spin"></i> Running',
+		style: `
+			background-color: red;
+			border: none;
+			color: white;
+			padding: 6px 12px;
+			font-size: 16px;
+		`,
+		onclick: () => stopScript()
+	});
+	popup.appendChild(btn);
+  document.body.appendChild(popup);
 }
 
-// const newContent = document.createTextNode("Hi there and greetings!");
-// newButton.appendChild(newContent);
+function hidePopup() {
+	document.getElementById(popupId).remove();
+}
 
-// FORMER next page conditional - detects scrolled to bottom
-// if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+
+// UNUSED UTILITIES
+function removeAds() {
+	const imgElems = document.getElementsByTagName('img');
+	for (var i = 0; i < imgElems.length; i++) {
+		imgElems[i].remove()
+	}
+	
+	// Remove advertisements
+	const insElems = document.getElementsByTagName('ins');
+	for (var i = 0; i < insElems.length; i++) {
+		insElems[i].remove()
+	}
+
+	// Remove blank space left by ads
+	const adElems = document.getElementsByClassName('adsbygoogle');
+	for (var i = 0; i < insElems.length; i++) {
+		adElems[i].remove()
+	}
+}
